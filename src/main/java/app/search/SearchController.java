@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -39,6 +40,14 @@ public class SearchController {
         List<Hotel> hotels = dao.findAll();
 
         return new ResponseEntity<>(hotels, HttpStatus.OK);
+    }
+
+    @RequestMapping("/v1/hotel")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public ResponseEntity<?> hotelByID(@RequestParam int id) {
+        Hotel hotel = dao.findById(id);
+
+        return new ResponseEntity<>(hotel, HttpStatus.OK);
     }
 
     @RequestMapping("/v1/hotels/{city}")
