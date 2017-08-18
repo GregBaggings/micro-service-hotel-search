@@ -25,15 +25,6 @@ public class SearchController {
     @Autowired
     HotelsDAO dao;
 
-    @Autowired
-    private DiscoveryClient discoveryClient;
-
-    @RequestMapping("/service-instances/{applicationName}")
-    public List<ServiceInstance> serviceInstancesByApplicationName(
-            @PathVariable String applicationName) {
-        return this.discoveryClient.getInstances(applicationName);
-    }
-
     @RequestMapping("/v1/hotels")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public ResponseEntity<?> hotels() {
