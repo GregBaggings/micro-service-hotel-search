@@ -42,10 +42,18 @@ public class SearchController {
         return new ResponseEntity<>(hotels, HttpStatus.OK);
     }
 
-    @RequestMapping("/v1/hotel")
+    @RequestMapping(value = "/v1/hotel", params = "id")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public ResponseEntity<?> hotelByID(@RequestParam int id) {
         Hotel hotel = dao.findById(id);
+
+        return new ResponseEntity<>(hotel, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/v1/hotel", params = "name")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public ResponseEntity<?> hotelByName(@RequestParam String name) {
+        Hotel hotel = dao.findByhotelName(name);
 
         return new ResponseEntity<>(hotel, HttpStatus.OK);
     }
