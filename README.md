@@ -23,6 +23,7 @@ hotelid | int NOT NULL
 roomid | int NOT NULL
 roomname | varchar(50)
 price | int NOT NULL
+
 Note: constraint FK_HOTELID FOREIGN KEY (hotelid) references hotels (id)
 
 
