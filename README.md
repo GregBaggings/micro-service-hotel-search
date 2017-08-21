@@ -17,6 +17,7 @@ lat | decimal(9,6)
 lon | decimal(9,6)
 
 Table **prices**
+
 Name | Type 
 ------------ | -------------
 hotelid | int NOT NULL
