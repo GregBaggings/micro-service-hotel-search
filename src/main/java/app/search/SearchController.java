@@ -7,12 +7,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class SearchController {
     @Autowired
     HotelsDAO dao;
 
-    @RequestMapping("/v1/hotels")
+    @RequestMapping(value = "/v1/hotels")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public ResponseEntity<?> hotels() {
         List<Hotel> hotels = dao.findAll();
