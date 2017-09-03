@@ -1,30 +1,18 @@
 package app.models;
 
-import javax.persistence.*;
-
 /**
  * Created by Gergely_Agnecz on 7/27/2017.
  */
-@Entity
-@Table(name = "hotels")
 public class Hotel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
     private int id;
-    @Column(name = "name", nullable = false)
     private String hotelName;
-    @Column(name = "country", nullable = false)
     private String country;
-    @Column(name = "city", nullable = false)
     private String city;
-    @Column(name = "address", nullable = false)
     private String address;
-    @Column(name = "lat", nullable = false)
     private Double lat;
-    @Column(name = "lon", nullable = false)
     private Double lon;
+    private int minprice;
 
     public int getId() {
         return id;
@@ -80,5 +68,13 @@ public class Hotel {
 
     public void setLon(Double lon) {
         this.lon = lon;
+    }
+
+    public int getMinprice() {
+        return minprice;
+    }
+
+    public void setMinprice(int minprice) {
+        this.minprice = minprice;
     }
 }
