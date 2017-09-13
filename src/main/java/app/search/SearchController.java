@@ -3,10 +3,8 @@ package app.search;
 import app.handlers.ErrorHandler;
 import app.handlers.ResponseBuilder;
 import app.models.Hotel;
-import app.models.MergedDetails;
 import app.models.Price;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -21,6 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,6 +67,44 @@ public class SearchController {
 
         List<Price> prices = pricesResponse.getBody();
         return new ResponseEntity<>(builder.buildResponse(hotel, prices), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/v2/search")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public ResponseEntity<?> searchByDestination(@Validated @RequestParam(value = "destination", required = true) String destination) {
+        ResponseEntity<List<Price>> pricesResponse = null;
+        ResponseEntity<List<Hotel>> hotelResponse = null;
+
+        try {
+            hotelResponse = restTemplate.exchange("http://localhost:2221/v1/hotels/{destination}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Hotel>>() {
+            }, destination);
+        } catch (HttpClientErrorException e) {
+            return new ResponseEntity<>(new ErrorHandler("No hotel found for the given destination: " + destination), HttpStatus.NOT_FOUND);
+        }
+
+        List<Integer> hotelIds = new ArrayList<Integer>();
+        List<List<Hotel>> hotelList = new ArrayList<>();
+
+        for (Hotel h : hotelResponse.getBody()) {
+            hotelIds.add(h.getId());
+            hotelList.add(hotelResponse.getBody());
+        }
+        logger.info("HotelIDs are: " + hotelIds);
+
+        List<List<Price>> prices = new ArrayList<>();
+        for (int i = 0; i < hotelIds.size(); i++) {
+            try {
+                logger.info("Getting price details for hotelID: " + hotelIds.get(i));
+                pricesResponse = restTemplate.exchange("http://localhost:2223/v1/hotels/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
+                }, hotelIds.get(i));
+                prices.add(pricesResponse.getBody());
+                logger.info("Price list for hotelID " + hotelIds.get(i) + " : " + prices.toString());
+            } catch (HttpClientErrorException e) {
+                logger.info("No pricing details for hotel id: " + hotelIds.get(i));
+            }
+        }
+        logger.info("Full price list: " + prices.toString());
+        return new ResponseEntity<>(builder.buildResponseFromLists(hotelList, prices), HttpStatus.OK);
     }
 
     @ExceptionHandler(TypeMismatchException.class)

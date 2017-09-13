@@ -1,7 +1,5 @@
 package app.models;
 
-import javax.persistence.*;
-
 /**
  * Created by Gergely_Agnecz on 8/1/2017.
  */
@@ -43,5 +41,10 @@ public class Price {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "HotelID: " + this.hotelId + ", roomID: " + this.roomId + ", room name: " + this.roomName + ", price: " + this.price;
     }
 }
