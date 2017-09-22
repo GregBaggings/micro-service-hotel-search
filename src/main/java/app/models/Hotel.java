@@ -77,4 +77,11 @@ public class Hotel {
     public void setMinprice(int minprice) {
         this.minprice = minprice;
     }
+
+    @Override
+    public String toString() {
+        return "Hotel id: " + this.id + ", hotelName: " + this.hotelName + ", country: " +
+                this.country + ", city: " + this.city + ", address: " + this.hotelName +
+                ", lat: " + this.lat + ", lon: " + this.lon + ", minprice: " + this.minprice;
+    }
 }
