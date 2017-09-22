@@ -2,6 +2,7 @@ package app.handlers;
 
 import app.models.Hotel;
 import app.models.Price;
+import app.models.Room;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
@@ -30,14 +31,15 @@ public class ResponseBuilder {
         return jsonObject;
     }
 
-    public JSONObject buildResponseFromLists(List<List<Hotel>> hotel, List<List<Price>> prices) {
+    public JSONObject buildResponseFromLists(List<List<Hotel>> hotel, List<List<Price>> prices, List <List<Room>> rooms) {
 
         HashMap<Object, Object> hotelDetails = new HashMap<>();
         for (int i = 0; i < hotel.size(); i++) {
             for (int j = 0; j < prices.size(); j++) {
                 jsonObject.put("hotelDetails", hotelDetails);
                 hotelDetails.put(hotel.get(i).get(i).getHotelName(), hotel.get(i).get(i));
-                jsonObject.put("pricing", prices.get(j));
+                jsonObject.put("prices", prices.get(j));
+                jsonObject.put("rooms",rooms.get(j));
             }
             jsonObject.put("result", "OK");
 
