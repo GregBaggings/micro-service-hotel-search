@@ -59,7 +59,7 @@ public class SearchController {
         logger.info("HotelID is : " + hotelId);
 
         try {
-            pricesResponse = restTemplate.exchange("http://localhost:2223/v1/hotels/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
+            pricesResponse = restTemplate.exchange("http://localhost:2223/v1/hotels/prices/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
             }, hotelId);
         } catch (HttpClientErrorException e) {
             return new ResponseEntity<>(new ErrorHandler("No pricing data is available for: " + hotelName), HttpStatus.NOT_FOUND);
@@ -97,7 +97,7 @@ public class SearchController {
         for (int i = 0; i < hotelIds.size(); i++) {
             try {
                 logger.info("Getting price details for hotelID: " + hotelIds.get(i));
-                pricesServiceResponse = restTemplate.exchange("http://localhost:2223/v1/hotels/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
+                pricesServiceResponse = restTemplate.exchange("http://localhost:2223/v1/hotels/prices/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
                 }, hotelIds.get(i));
                 priceList.add(pricesServiceResponse.getBody());
                 logger.info("Price list for hotelID " + hotelIds.get(i) + " : " + priceList.toString());
