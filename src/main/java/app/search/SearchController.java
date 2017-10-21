@@ -34,10 +34,10 @@ public class SearchController {
     private ResponseBuilder builder = new ResponseBuilder();
     private RestTemplate restTemplate = new RestTemplate();
 
-    @RequestMapping(value = "/v1/hotels")
+    @RequestMapping(value = "/v1/search")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public ResponseEntity<?> hotels() {
-        ResponseEntity<List<Hotel>> hotels = restTemplate.exchange("http://localhost:2221/v1/hotels", HttpMethod.GET, null, new ParameterizedTypeReference<List<Hotel>>() {
+        ResponseEntity<List<Hotel>> hotels = restTemplate.exchange("http://localhost:2221/v1/search", HttpMethod.GET, null, new ParameterizedTypeReference<List<Hotel>>() {
         });
 
         return new ResponseEntity<>(hotels.getBody(), HttpStatus.OK);
@@ -47,7 +47,7 @@ public class SearchController {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public ResponseEntity<?> searchByName(@Validated @RequestParam(value = "hotelName", required = true) String hotelName) {
         ResponseEntity<List<Price>> pricesResponse;
-        ResponseEntity<Hotel> hotelResponse = restTemplate.exchange("http://localhost:2221/v1/hotels/hotel?name={hotelName}", HttpMethod.GET, null, new ParameterizedTypeReference<Hotel>() {
+        ResponseEntity<Hotel> hotelResponse = restTemplate.exchange("http://localhost:2221/v1/search/hotel?name={hotelName}", HttpMethod.GET, null, new ParameterizedTypeReference<Hotel>() {
         }, hotelName);
 
         Hotel hotel = hotelResponse.getBody();
@@ -59,7 +59,7 @@ public class SearchController {
         logger.info("HotelID is : " + hotelId);
 
         try {
-            pricesResponse = restTemplate.exchange("http://localhost:2223/v1/hotels/prices/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
+            pricesResponse = restTemplate.exchange("http://localhost:2223/v1/search/prices/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
             }, hotelId);
         } catch (HttpClientErrorException e) {
             return new ResponseEntity<>(new ErrorHandler("No pricing data is available for: " + hotelName), HttpStatus.NOT_FOUND);
@@ -81,7 +81,7 @@ public class SearchController {
         List<List<Room>> roomList = new ArrayList<>();
 
         try {
-            hotelsServiceResponse = restTemplate.exchange("http://localhost:2221/v1/hotels/{destination}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Hotel>>() {
+            hotelsServiceResponse = restTemplate.exchange("http://localhost:2221/v1/search/{destination}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Hotel>>() {
             }, destination);
         } catch (HttpClientErrorException e) {
             return new ResponseEntity<>(new ErrorHandler("No hotel found for the given destination: " + destination), HttpStatus.NOT_FOUND);
@@ -97,7 +97,7 @@ public class SearchController {
         for (int i = 0; i < hotelIds.size(); i++) {
             try {
                 logger.info("Getting price details for hotelID: " + hotelIds.get(i));
-                pricesServiceResponse = restTemplate.exchange("http://localhost:2223/v1/hotels/prices/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
+                pricesServiceResponse = restTemplate.exchange("http://localhost:2223/v1/search/prices/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
                 }, hotelIds.get(i));
                 priceList.add(pricesServiceResponse.getBody());
                 logger.info("Price list for hotelID " + hotelIds.get(i) + " : " + priceList.toString());
@@ -111,7 +111,7 @@ public class SearchController {
         for (int i = 0; i < hotelIds.size(); i++) {
             try {
                 logger.info("Getting room details for hotelID: " + hotelIds.get(i));
-                roomsServiceResponse = restTemplate.exchange("http://localhost:2224/v1/hotels/hotel/{hotelId}/rooms", HttpMethod.GET, null, new ParameterizedTypeReference<List<Room>>() {
+                roomsServiceResponse = restTemplate.exchange("http://localhost:2224/v1/search/hotel/{hotelId}/rooms", HttpMethod.GET, null, new ParameterizedTypeReference<List<Room>>() {
                 }, hotelIds.get(i));
                 roomList.add(roomsServiceResponse.getBody());
                 logger.info("Rooms list for hotelID " + hotelIds.get(i) + " : " + roomList.toString());
