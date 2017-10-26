@@ -36,14 +36,7 @@ public class ResponseBuilder {
         HashMap<Object, Object> hotelDetails = new HashMap<>();
         for (int i = 0; i < hotel.size(); i++) {
             jsonObject.put("hotelDetails", hotelDetails);
-            hotelDetails.put(hotel.get(i).get(i).getHotelName(), hotel.get(i).get(i));
-            for (int j = 0; j < prices.size(); j++) {
-                hotelDetails.put("prices", prices.get(j));
-                for (int k = 0; k < rooms.size(); k++) {
-                    hotelDetails.put("rooms", rooms.get(k));
-                }
-                jsonObject.put("prices", prices.get(j));
-            }
+            hotelDetails.put("hotel" + i, hotel.get(i).get(i));
         }
         jsonObject.put("result", "OK");
         return jsonObject;
