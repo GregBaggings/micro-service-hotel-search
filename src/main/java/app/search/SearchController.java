@@ -34,42 +34,7 @@ public class SearchController {
     private ResponseBuilder builder = new ResponseBuilder();
     private RestTemplate restTemplate = new RestTemplate();
 
-    @RequestMapping(value = "/v1/hotels")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public ResponseEntity<?> hotels() {
-        ResponseEntity<List<Hotel>> hotels = restTemplate.exchange("http://localhost:2221/v1/hotels", HttpMethod.GET, null, new ParameterizedTypeReference<List<Hotel>>() {
-        });
-
-        return new ResponseEntity<>(hotels.getBody(), HttpStatus.OK);
-    }
-
     @RequestMapping(value = "/v1/search")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public ResponseEntity<?> searchByName(@Validated @RequestParam(value = "hotelName", required = true) String hotelName) {
-        ResponseEntity<List<Price>> pricesResponse;
-        ResponseEntity<Hotel> hotelResponse = restTemplate.exchange("http://localhost:2221/v1/hotels/hotel?name={hotelName}", HttpMethod.GET, null, new ParameterizedTypeReference<Hotel>() {
-        }, hotelName);
-
-        Hotel hotel = hotelResponse.getBody();
-        if (hotel == null) {
-            return new ResponseEntity<>(new ErrorHandler(incorrectInputHandler.getError()), HttpStatus.NOT_FOUND);
-        }
-
-        int hotelId = hotelResponse.getBody().getId();
-        logger.info("HotelID is : " + hotelId);
-
-        try {
-            pricesResponse = restTemplate.exchange("http://localhost:2223/v1/hotels/prices/price?id={hotelId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Price>>() {
-            }, hotelId);
-        } catch (HttpClientErrorException e) {
-            return new ResponseEntity<>(new ErrorHandler("No pricing data is available for: " + hotelName), HttpStatus.NOT_FOUND);
-        }
-
-        List<Price> prices = pricesResponse.getBody();
-        return new ResponseEntity<>(builder.buildResponse(hotel, prices), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/v2/search")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public ResponseEntity<?> searchByDestination(@Validated @RequestParam(value = "destination", required = true) String destination) {
         ResponseEntity<List<Price>> pricesServiceResponse = null;
