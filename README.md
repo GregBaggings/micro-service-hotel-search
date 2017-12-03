@@ -9,4 +9,4 @@ This module gives back a list of hotels or a certain hotel for a destination whe
 
 ***Endpoint:*** {host}/v1/search
 
-***Example:*** http://localhost:2222/v1/search?destinationName=Budapest
+***Example:*** http://localhost:2222/v1/search?destination=Budapest

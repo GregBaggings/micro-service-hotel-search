@@ -8,7 +8,6 @@ import app.models.Room;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -28,8 +27,9 @@ import java.util.List;
  */
 @RestController
 public class SearchController {
-    private ErrorHandler incorrectInputHandler = new ErrorHandler("Incorrect input. Please enter a valid hotel name!");
-    private ErrorHandler missingParameterHandler = new ErrorHandler("Missing param: hotelName");
+    private ErrorHandler incorrectInputHandler = new ErrorHandler("Incorrect input. Please enter a valid destination!");
+    private ErrorHandler missingParameterHandler = new ErrorHandler("Missing param: destination");
+    private String regex = "^[a-zA-Z]+$";
     private Logger logger = LoggerFactory.getLogger(SearchController.class);
     private ResponseBuilder builder = new ResponseBuilder();
     private RestTemplate restTemplate = new RestTemplate();
@@ -44,6 +44,10 @@ public class SearchController {
         List<List<Hotel>> hotelList = new ArrayList<>();
         List<List<Price>> priceList = new ArrayList<>();
         List<List<Room>> roomList = new ArrayList<>();
+
+        if (destination == null || !destination.matches(regex)) {
+            throw new IllegalArgumentException();
+        }
 
         try {
             hotelsServiceResponse = restTemplate.exchange("http://localhost:2221/v1/hotels/{destination}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Hotel>>() {
@@ -87,14 +91,14 @@ public class SearchController {
 
         logger.info("Full room list: " + roomList.toString());
 
-        if(roomList.isEmpty() || priceList.isEmpty()){
+        if (roomList.isEmpty() || priceList.isEmpty()) {
             return new ResponseEntity<>(new ErrorHandler("No hotel found"), HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>(builder.buildResponseFromLists(hotelList, priceList, roomList), HttpStatus.OK);
     }
 
-    @ExceptionHandler(TypeMismatchException.class)
+    @ExceptionHandler(IllegalArgumentException.class)
     @ResponseBody
     public ResponseEntity<?> wrongType(Exception exception, HttpServletRequest request) {
         return new ResponseEntity<>(incorrectInputHandler, HttpStatus.BAD_REQUEST);
